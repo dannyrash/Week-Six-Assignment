@@ -1,78 +1,93 @@
-__author__ = 'Danny Rash'
-
+# Conway's game of life
+# Daniel Rash
 # CIS-125
-# Week 6 Assignment
 
-# Function populate
-# Pre Conditions
-#   World is a list
+# Functions
+# populate()
+# display()
+# generation()
+# main()
 
-# Post Conditions
-#   World will contain random cells
+#Function populate
+#preconditions
+#   random is imported
+#   world is created as list
+#   height is defined (as integer)
+#   width is defined (as integer)
+#postcondition
+#   world is populated with ?? (string)
 
-def populate(world, h = 22, w = 80):
+
+def populate(petri_dish, h=80, w=22):
     import random
     for x in range(h):
-        row = []
-        for y in range(w):
-            r = random.randint(0,1)
-            if r == 0:
-                row.append('_')
-            else:
-                row.append('*')
-        world.append(row)
+            row = []
+            for y in range(w):
+                    row.append(random.randint(0, 1))
+            petri_dish.append(row)
 
-# Function display
-# Pre Conditions
-#   World is populated
-# Post Conditions
-#   None
+# Function display(world,h,w)
+# Preconditions
+#   world is populated
+# Postcondition
+#   world is not changed
+
 
 def display(world, h = 22, w = 80):
-    worldString = ''
+    worldstring = ""
     for x in range(h):
-        rowString = ''
         for y in range(w):
-            rowString += world[x][y]
-        worldString += rowString + "\n"
-    print(worldString)
-    
-# Function generate
-# Generates new world based on whether cells are dead or alive
-    
-def generate(petri_dish, h = 22, w = 80):
+            if world[x][y] == 1:
+                worldstring += "*"
+            else:
+                worldstring += " "
+        worldstring += '\n'
+    print(worldstring)
+
+
+# Function generation(world,h,w)
+# Preconditions
+#   world is populated
+# Postconditions
+#   Returns new world
+
+
+def generation(petri_dish, h=22, w=80):
     new_world = []
+    populate(new_world,h,w)
     for x in range(h):
         row = []
         for y in range(w):
             row.append(0)
-        new_world.append(1)
+        new_world.append(row)
     
-    print("New World")
-    print(new_world)
-    n = 0
+    n = 0    
     for x in range(1,h-1):
         for y in range(1,w-1):
-            n = petri_dish[x-1][y-1] + \
-                petri_dish[x-1][y] + \
-                petri_dish[x-1][y+1] + \
-                petri_dish[x][y-1] + \
-                petri_dish[x][y+1] + \
-                petri_dish[x+1][y-1] + \
-                petri_dish[x+1][y] + \
+            n = petri_dish[x-1][y-1] +  \
+                petri_dish[x-1][y] +  \
+                petri_dish[x-1][y+1] +  \
+                petri_dish[x][y-1] +  \
+                petri_dish[x][y+1] +  \
+                petri_dish[x+1][y-1] +  \
+                petri_dish[x+1][y] +  \
                 petri_dish[x+1][y+1]
+
+            
+            if petri_dish[x][y] == 0:
+                if n == 3:
+                    new_world[x][y] = 1
+                else:
+                    new_world[x][y] = 0
+            else: #(cell is alive)
+                if n < 2 or n > 3:
+                    new_world[x][y] = 0
+                else:
+                    new_world[x][y] = 1
     
-        if petri_dish[x][y]:
-            if n == 3:
-                new_world[x][y] = 1
-                
-        else:
-            if n < 2 or n > 3:
-                new_world[x][y] = 0
-    
-    petri_dish = new_world
-    
-# Function main
+    print(new_world)
+    petri_dish[:] = new_world
+
 
 def main():
     world = []
@@ -80,13 +95,14 @@ def main():
     width = 80
     populate(world, height, width)
     display(world, height, width)
-    k = input("Press any key to continue (q to quit): ")
-    if k != "q":
-        generate(world, height, width)
+    key = input("Press q to quit, any other key to continue: ")
+    while key != 'q':
+        generation(world, height, width)
         display(world, height, width)
-        k = input("Press any key to continue (q to quit): ")
-        if k == "q":
-            print("Goodbye!")
+        key = input("Press q to quit, any other key to continue: ")
 
-if __name__ == "__main__":
+    print("Goodbye!")
+
+
+if __name__ == '__main__':
     main()
